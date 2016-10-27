@@ -1,0 +1,3 @@
+argparse==1.2.1
+biopython==1.68
+wsgiref==0.1.2
