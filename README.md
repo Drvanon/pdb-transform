@@ -2,8 +2,9 @@
 Apply transformation matrix to a PDB file
 
 # dependencies
-All dependencies are listed in the requirements.txt file
+All dependencies are listed in the requirements.txt file.
 To install them run:
+
 `pip install -r requirements.txt`
 
 # usage:
