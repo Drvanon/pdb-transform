@@ -6,20 +6,30 @@ from Bio import PDB
 def parse_matrix(matrix_path):
     """
     Parses transformation matrix file
-    file format: csv, first three lines are translation vectors (x, y, and z, respectively)
-        fourth line is a rotation vector
+    file format: csv, first three lines are rotation vectors (x, y, and z, respectively)
+        fourth line is a translation vector
 
     :return: transformation dict
         {
-        'translation': {
-            'x': x translation vector (list),
-            'y': y translation vector (list),
-            'z': z translation vector (list)
-        },
-        'rotation': rotation vector (list)
+        'rotation': [
+            x rotation vector (list),
+            y rotation vector (list),
+            z rotation vector (list)
+        ],
+        'translation': translation vector (list)
         }
     """
-    pass
+    with open(matrix_path) as a:
+        matrix_lines = a.read().splitlines()
+
+    # split up lines and convert values to floats
+    matrix = map(lambda x: map(float, x.split(',')), matrix_lines)
+
+    matrix_dict = {
+        'rotation': [matrix[0], matrix[1], matrix[2]],
+        'translation': matrix[3]
+    }
+    return matrix_dict
 
 
 def parse_pdb_file(pdb_path):
@@ -27,7 +37,10 @@ def parse_pdb_file(pdb_path):
     :param pdb_path:
     :return: biopython's structure object
     """
-    pass
+    parser = PDB.PDBParser()
+    strct_name = pdb_path.split('.')[0]
+    structure = parser.get_structure(strct_name, pdb_path)
+    return structure
 
 
 def write_pdb_file(structure, output_path):
@@ -35,7 +48,10 @@ def write_pdb_file(structure, output_path):
     :param structure: biopython's structure object
     :param output_path:
     """
-    pass
+    io = PDB.PDBIO()
+    io.set_structure(structure)
+    io.save(output_path)
+    return output_path
 
 
 def apply_transformation(structure, matrix):
@@ -45,7 +61,15 @@ def apply_transformation(structure, matrix):
     :param matrix: transformation matrix dict
     :return: transformed structure
     """
-    pass
+    # rotation = np.asmatrix(np.array(matrix['rotation']))
+    rotation = matrix['rotation']
+    # translation = np.array(matrix['translation'])
+    translation = matrix['translation']
+
+    # apply transformation to each atom
+    map(lambda atom: atom.transform(rotation, translation), structure.get_atoms())
+
+    return structure
 
 
 def pdb_transform(pdb_path, matrix_path, output_path):
