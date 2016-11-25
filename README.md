@@ -9,3 +9,7 @@ To install them run:
 
 # usage:
 `python pdb_transform.py -pdb pdb_path -mat trans_matrix_path -out output_pdb_path`
+
+# input format
+CSV, first three lines are rotation vectors (x, y, and z, respectively) and
+the fourth line is a translation vector
