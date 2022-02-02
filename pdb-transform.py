@@ -1,4 +1,5 @@
 import argparse
+import copy
 
 from Bio import PDB
 
@@ -61,14 +62,19 @@ def apply_transformation(structure, matrix):
     :param matrix: transformation matrix dict
     :return: transformed structure
     """
+    # Atom.transform has a side effect, without a return value, so performing a deepcopy
+    # allows to return a transformed copy, instead of returning the same object.
+    
+    structure = copy.deepcopy(structure)
     # rotation = np.asmatrix(np.array(matrix['rotation']))
     rotation = matrix['rotation']
     # translation = np.array(matrix['translation'])
     translation = matrix['translation']
 
     # apply transformation to each atom
-    map(lambda atom: atom.transform(rotation, translation), structure.get_atoms())
-
+    for atom in structure.get_atoms():
+        atom.transform(rotation, translation)
+    
     return structure
 
 
